@@ -1,4 +1,5 @@
-# Back-up materials for VE280
+# Programming and Elementary Data Structures
+## Back-up materials for VE280
 ## Be careful of violation to HC!
 ## 2018/5/31
 Project 1
