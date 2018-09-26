@@ -80,9 +80,18 @@ for (i in 1:100){
 
 
 # Task 3 part(a) --------------------------------------------
-gradebook.df =data.frame(
-  proj = c(rep(18,6),rep(17,4),rep(16,3),rep(15,7),rep(18,5),
-          rep(17,4),rep(16,5),rep(15,6))
+grade = data.frame(
+  gindex = (1:5),
+  grade = c("A", "B", "C", "D", "F"),
+  desc = c("Excellent", "Good", "Satisfactory", "Poor", 
+           "Inadequate")
+)
+gradebook.df = data.frame(
+  
+  fail = c(rep(FALSE,14), TRUE, rep(FALSE,25)),
+  gender = c(rep("Female",20), rep("Male",20)),
+  proj = c(rep(18,6),rep(17,4), rep(16,3), rep(15,7), rep(18,5),
+          rep(17,4), rep(16,5), rep(15,6))
 )
 
 
