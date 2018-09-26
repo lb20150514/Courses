@@ -81,31 +81,42 @@ for (i in 1:100){
 
 # Task 3 part(a) --------------------------------------------
 grade = data.frame(
-  gindex = (1:5),
+  index = (1:5),
   grade = c("A", "B", "C", "D", "F"),
   desc = c("Excellent", "Good", "Satisfactory", "Poor", 
            "Inadequate")
 )
-gradebook.df = data.frame(
-  
+student = data.frame(
+  gindex = c(3,3,4,1,1,2,2,2,2,1,2,3,1,2,5,1,2,1,4,1,1,1,3,3,1,
+            3,2,2,1,2,3,2,1,1,2,3,3,2,3,2),
   fail = c(rep(FALSE,14), TRUE, rep(FALSE,25)),
   gender = c(rep("Female",20), rep("Male",20)),
   proj = c(rep(18,6),rep(17,4), rep(16,3), rep(15,7), rep(18,5),
           rep(17,4), rep(16,5), rep(15,6))
 )
+gradebook.df = merge(grade, student, by.x = "index",by.y = "gindex")
 
 
 # Task 3 part(b) --------------------------------------------
+
 
 # Task 3 part(c) --------------------------------------------
 
 # Task 3 part(d) --------------------------------------------
 
+
 # Task 4 part(a) --------------------------------------------
+noral_sample = rnorm(100,4,2)
+hist(noral_sample)
 
 # Task 4 part(b) --------------------------------------------
+hist(noral_sample,freq = F)
+par(new = T)
+curve(dnorm(x, 4, 2), from = 0, to = 10, yaxt = "n", ylab = "")
 
 # Task 4 part(c) --------------------------------------------
+
+
 
 # Task 5 part(a) --------------------------------------------
 
