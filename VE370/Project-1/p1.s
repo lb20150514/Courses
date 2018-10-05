@@ -1,9 +1,12 @@
  .text
  .globl  __start
 __start: 
+	addi $sp, $sp, -88
+	
     addiu $t0, $zero, 20	# load size = 20 to $t0 as an unsigned number;
+	addiu $s0, $sp, 8
     addi $t1, $zero, 55
-    sw $t1, 0($s0)
+	sw $t1, 0($s0)
     addi $t1, $zero, 83
     sw $t1, 4($s0)
     addi $t1, $zero, 18
@@ -46,48 +49,38 @@ __start:
     # load testarray in $s0
     addi $t2, $zero, 1
     jal countArray       	# $ra = address of (countArray(testArray, size, 1))
-    sw $s1, ($s6)         	# PassCnt = $s6 = $s1
+    add $t6, $zero, $s1     # PassCnt = $t6 = $s1
     addi $t2, $zero, -1
     jal countArray      	# $ra = address of (countArray(testArray, size, -1))
-    sw $s1, ($s7)         	# FailCnt = $s7 = $s1
+    add $t7, $zero, $s1     # FailCnt = $t7 = $s1
     j exit
 countArray: 
-    addi $sp, $sp, -4
-    sw $ra, ($sp)           # store instruction address
+	addi $ra, $ra, -4
     add $t3, $zero, $t0     # $t3 = i = size
     addi $s1, $zero, 0      # $s1 = cnt = 0
+	addi $s3, $zero, 1      # $s3 = 1
+	addi $t5, $zero, 60	    # $t5 = 60
 loop: 
-    addiu $s3, $zero, 1     # $s3 = 1
     sll $t4, $t3, 2         # $t4 = i * 4 - 4
     addi $t4, $t4, -4
     add $s2, $t4, $s0       # store address of testArray[i] in $s2(from size - 1 to 0)
-    lw $s3, ($s2)           # $s3 = testArray[i]
-    addi $sp, $sp, -4   
-    sw $ra, ($sp)           # store instruction address
-    beq $t2, $s3, Pass      # case (numElements == 1)
-    sw $ra, ($sp)           # reload instruction address
-    bne $t2, $s3, Fail      # default
+    lw $s5, ($s2)           # $s5 = testArray[i]
+    bne $t2, $s3, Fail      # default, else into Pass
+Pass:
+    slt, $s4, $s5, $t5     
+    beq, $s4, $zero, add1	# if (testArray[i] >= 60)
+	j judge_i               
+Fail:
+    slt $s4, $s5, $t5
+    bne, $s4, $zero, add1   # if (testArray[i] < 60)
+    j judge_i
+add1:
+    addiu $s1, $s1, 1		# cnt++
+judge_i:
     addi $t3, $t3, -1       # i--
     slt $s4, $zero, $t3     # i > 0
     beq $s4, $s3, loop
-    lw $ra, 4($sp)
-    jr $ra                  # back to main
-Pass: 
-    addiu $t5, $zero, 60
-    slt, $s5, $s3, $t5      # if (testArray[i] >= 60) cnt++
-    beq, $s5, $zero, add1
-    lw $ra, ($sp)           # back to countArray
-    jr $ra
-Fail:   
-    addiu $t5, $zero, 60
-    slt $s5, $s3, $t5
-    bne, $s5, $zero, add1   # if (testArray[i] < 60) cnt ++
-    lw $ra, ($sp)
-    jr $ra                  # back to countArray 
-add1: 
-    addiu $s3, $s3, 1
-    lw $ra, ($sp)
-    jr $ra                  # back to countArray
+    jr $ra  
 exit: 
     addiu $v0, $zero, 10
     syscall
