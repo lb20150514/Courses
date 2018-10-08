@@ -49,13 +49,15 @@ __start:
     # load testarray in $s0
     addi $t2, $zero, 1
     jal countArray       	# $ra = address of (countArray(testArray, size, 1))
+	add $t1, $zero, $t1
     add $t6, $zero, $s1     # PassCnt = $t6 = $s1
     addi $t2, $zero, -1
     jal countArray      	# $ra = address of (countArray(testArray, size, -1))
-    add $t7, $zero, $s1     # FailCnt = $t7 = $s1
+	add $t1, $zero, $t1
+	add $t7, $zero, $s1     # FailCnt = $t7 = $s1
     j exit
 countArray: 
-	addi $ra, $ra, -4
+	add $t1, $0, $t1
     add $t3, $zero, $t0     # $t3 = i = size
     addi $s1, $zero, 0      # $s1 = cnt = 0
 	addi $s3, $zero, 1      # $s3 = 1
@@ -66,14 +68,14 @@ loop:
     add $s2, $t4, $s0       # store address of testArray[i] in $s2(from size - 1 to 0)
     lw $s5, ($s2)           # $s5 = testArray[i]
     bne $t2, $s3, Fail      # default, else into Pass
-Pass:
-    slt, $s4, $s5, $t5     
-    beq, $s4, $zero, add1	# if (testArray[i] >= 60)
+    slt $s4, $s5, $t5     
+    beq $s4, $zero, add1	# if (testArray[i] >= 60)
 	j judge_i               
 Fail:
     slt $s4, $s5, $t5
-    bne, $s4, $zero, add1   # if (testArray[i] < 60)
+    bne $s4, $zero, add1   # if (testArray[i] < 60)
     j judge_i
+	add $t1, $zero, $t1
 add1:
     addiu $s1, $s1, 1		# cnt++
 judge_i:
