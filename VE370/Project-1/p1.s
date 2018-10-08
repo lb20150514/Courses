@@ -1,11 +1,12 @@
  .text
  .globl  __start
 __start: 
-    addi $sp, $sp, -88
+	addi $sp, $sp, -88
+	
     addiu $t0, $zero, 20	# load size = 20 to $t0 as an unsigned number;
-    addiu $s0, $sp, 8
+	addiu $s0, $sp, 8
     addi $t1, $zero, 55
-    sw $t1, 0($s0)
+	sw $t1, 0($s0)
     addi $t1, $zero, 83
     sw $t1, 4($s0)
     addi $t1, $zero, 18
@@ -48,40 +49,43 @@ __start:
     # load testarray in $s0
     addi $t2, $zero, 1
     jal countArray       	# $ra = address of (countArray(testArray, size, 1))
-    add $t1, $zero, $t1		
-    add $t6, $zero, $s1     	# PassCnt = $t6 = $s1
+	add $t1, $zero, $t1		# wait for delay
+    add $t6, $zero, $s1     # PassCnt = $t6 = $s1
     addi $t2, $zero, -1
     jal countArray      	# $ra = address of (countArray(testArray, size, -1))
-    add $t1, $zero, $t1
-    add $t7, $zero, $s1     	# FailCnt = $t7 = $s1
+	add $t1, $zero, $t1		# wait for delay
+	add $t7, $zero, $s1     # FailCnt = $t7 = $s1
     j exit
+	add $t1, $zero, $t1		# wait for delay
 countArray: 
-    add $t1, $0, $t1
-    add $t3, $zero, $t0     	# $t3 = i = size
-    addi $s1, $zero, 0      	# $s1 = cnt = 0
-    addi $s3, $zero, 1      	# $s3 = 1
-    addi $t5, $zero, 60		# $t5 = 60
+	add $t1, $zero, $t1		# wait for delay
+    add $t3, $zero, $t0     # $t3 = i = size
+    addi $s1, $zero, 0      # $s1 = cnt = 0
+	addi $s3, $zero, 1      # $s3 = 1
+	addi $t5, $zero, 60	    # $t5 = 60
 loop: 
-    sll $t4, $t3, 2         	# $t4 = i * 4 - 4
+    sll $t4, $t3, 2         # $t4 = i * 4 - 4
     addi $t4, $t4, -4
-    add $s2, $t4, $s0       	# store address of testArray[i] in $s2(from size - 1 to 0)
-    lw $s5, ($s2)           	# $s5 = testArray[i]
-    bne $t2, $s3, Fail      	# default, else into Pass
+    add $s2, $t4, $s0       # store address of testArray[i] in $s2(from size - 1 to 0)
+    lw $s5, ($s2)           # $s5 = testArray[i]
+    bne $t2, $s3, Fail      # default, else into Pass
     slt $s4, $s5, $t5     
     beq $s4, $zero, add1	# if (testArray[i] >= 60)
-    j judge_i               
+	j judge_i
+	add $t1, $zero, $t1		# wait for delay	
 Fail:
     slt $s4, $s5, $t5
-    bne $s4, $zero, add1   	# if (testArray[i] < 60)
+    bne $s4, $zero, add1   # if (testArray[i] < 60)
     j judge_i
-    add $t1, $zero, $t1
+	add $t1, $zero, $t1
 add1:
     addiu $s1, $s1, 1		# cnt++
 judge_i:
-    addi $t3, $t3, -1       	# i--
-    slt $s4, $zero, $t3     	# i > 0
+    addi $t3, $t3, -1       # i--
+    slt $s4, $zero, $t3     # i > 0
     beq $s4, $s3, loop
-    jr $ra  
+    jr $ra
+	add $t1, $zero, $t1		# wait for delay
 exit: 
     addiu $v0, $zero, 10
     syscall
