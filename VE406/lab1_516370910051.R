@@ -1,28 +1,36 @@
 # Task 1 part(a) --------------------------------------------
-# >? round
-# >?? regression
+# ? round
+# ?? regression
 
-# '? function':
-#   return help of the function and description of its related functions
-# '?? concept':
-#   return a list of URL links to functions based on the concept
+# Everything in R exists as data structure that can be 
+# manipulated.
+# The data contained and the way the data is organized depend
+# on the class from which the object was generated.
+# '? object':
+#   Exact match all functions in packages and libraries that 
+#   are currently loaded.
+# '?? class':
+#   Search in all the help documents that have been downloaded.
 
 
 # Task 1 part(b) --------------------------------------------
 x <- 1/7
-print(x,15)
+my.print.15digits.func = function(x){
+  print(x,15)
+}
+my.print.15digits.func(x)
 
 
 # Task 1 part(c) --------------------------------------------
-# >demo(graphics)
+# demo(graphics)
 
 # We use 'coplot()' when drawing conditioning plots.
 
 
 # Task 1 part(d) --------------------------------------------
-# >.1 == 0.1
+# .1 == 0.1
 # [1] TRUE
-# >.1 + .2 == .3
+# .1 + .2 == .3
 # [1] FALSE
 
 # Numbers are stored in binary form in computer. 
@@ -40,15 +48,28 @@ for (i in 1:100){
   y.vec[2 * i - 1] <- i
 }
 
+# rep(1:100,each=2) ^ c(1,0) + c(0,-2)
 
-# Task 2 part(a) --------------------------------------------
-# i)    z[1]
-# ii)   z[2:5]
-# iii)  z[1:(length(z)-2)]
-# iv)   z[c(seq(1,length(z),by=2))]
-# v)    z[z>0]
-# vi)   z[!is.na(z)]
-# vii)  z[c(seq(2,length(z),by=3))]
+# Task 2 part(a) i)  ----------------------------------------
+z[1]
+
+# Task 2 part(a) ii)  ---------------------------------------
+z[2:5]
+
+# Task 2 part(a) iii)  --------------------------------------
+z[1:(length(z)-2)]
+
+# Task 2 part(a) iv)  ---------------------------------------
+z[c(seq(1,length(z),by=2))]
+
+# Task 2 part(a) v)  ----------------------------------------
+z[z>0]
+
+# Task 2 part(a) vi)  ---------------------------------------
+z[!is.na(z)]
+
+# Task 2 part(a) vii)  --------------------------------------
+z[c(seq(2,length(z),by=3))]
 
 
 # Task 2 part(b) --------------------------------------------
@@ -56,9 +77,11 @@ for (i in 1:100){
 # The second line extracts data in z corresponding to michigan.
 
 
-# Task 2 part(c) --------------------------------------------
-# i)    m.mat[1:2,]
-# ii)   m.mat[row(m.mat)==2 & m.mat>log2(10)]
+# Task 2 part(c) i) -----------------------------------------
+m.mat[1:2,]
+
+# Task 2 part(c) ii) ----------------------------------------
+m.mat[row(m.mat)==2 & m.mat>log2(10)]
 
 
 # Task 2 part(d) --------------------------------------------
@@ -66,9 +89,11 @@ for (i in 1:100){
 #   in column, then from left to right in row.
 
 
-# Task 2 part(e) --------------------------------------------
-# i)    m.df[1:2,]
-# ii)   m.df[row(m.df)==2 & m.df>log2(10)]
+# Task 2 part(e) i) -----------------------------------------
+m.df[1:2,]
+
+# Task 2 part(e) ii) ----------------------------------------
+m.df[row(m.df)==2 & m.df>log2(10)]
 
 
 # Task 2 part(f) --------------------------------------------
@@ -84,25 +109,29 @@ grade = data.frame(
   gindex = (1:5),
   grade = c("A", "B", "C", "D", "F"),
   desc = c("Excellent", "Good", "Satisfactory", "Poor", 
-           "Inadequate")
+           "Inadequate"),
+  fail = c(rep(FALSE,4),TRUE)
 )
-student = data.frame(
-  gindex = c(3,3,4,1,1,2,2,2,2,1,2,3,1,2,5,1,2,1,4,1,1,1,3,3,1,
-             3,2,2,1,2,3,2,1,1,2,3,3,2,3,2),
-  fail = c(rep(FALSE,14), TRUE, rep(FALSE,25)),
+grade.part1 = data.frame(grade[c(3,3,4,1,1,2,2,2,2,1,2,3,1,2,5,1,2,1,4,1,1,
+                      1,3,3,1,3,2,2,1,2,3,2,1,1,2,3,3,2,3,2),])
+grade.part2 = data.frame(
   gender = c(rep("Female",20), rep("Male",20)),
   proj = c(rep(18,6),rep(17,4), rep(16,3), rep(15,7), rep(18,5),
            rep(17,4), rep(16,5), rep(15,6))
 )
-gradebook.df = merge(grade, student, by.x = "gindex",by.y = "gindex")
+gradebook.df = cbind(grade.part1, grade.part2)
+rownames(gradebook.df) <- c(1:40)
 
+# gradebook.df = merge(grade, student, by.x = "gindex", sort = FALSE)
 
 # Task 3 part(b) --------------------------------------------
-
+sample.df = gradebook.df[sample(1:40,10),]
+rownames(sample.df) <- c(1:10)
 
 
 # Task 3 part(c) --------------------------------------------
-mean_project <- aggregate(gradebook.df["proj"],by=gradebook.df["grade"],FUN=mean)
+mean_project <- aggregate(gradebook.df["proj"],
+                          by=gradebook.df["grade"],FUN=mean)
 
 
 # Task 3 part(d) --------------------------------------------
@@ -118,11 +147,14 @@ hist(noral_sample)
 # Task 4 part(b) --------------------------------------------
 hist(noral_sample,freq = F)
 par(new = T)
-curve(dnorm(x, 4, 2), from = 0, to = 10, yaxt = "n", ylab = "")
+curve(dnorm(x, 4, 2), from = 0, to = 10, yaxt = "n", xlab = "",
+      ylab = "")
 
 
 # Task 4 part(c) --------------------------------------------
-
+sample.mixed = rnorm(1000, 0, 1)
+sample.mixed = sample.mixed * c(rep(1,700),rep(2,300)) + 
+  c(rep(0,700),rep(4,300))
 
 
 # Task 5 part(a) --------------------------------------------
@@ -194,6 +226,8 @@ library(lattice)
 # Cite from help of xyplot
 EE <- equal.count(ethanol$E, number=9, overlap=1/4)
 
+xyplot(NOx ~ C, data = ethanol)
+xyplot(NOx ~ E, data = ethanol)
 xyplot(NOx ~ C | EE, data = ethanol,
        prepanel = function(x, y) prepanel.loess(x, y, span = 1),
        xlab = "Compression Ratio", ylab = "NOx (micrograms/J)",
