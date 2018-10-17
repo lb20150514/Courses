@@ -1,7 +1,28 @@
-main: main.o
-	g++ -O2 -o  main main.o
-main.o: main.cpp
-	g++ -c main.cpp
+# Sample Makefile 
 
-clean: 
-	rm -f *.o
+CC = g++
+MAINSRCS = main.cpp
+OTHSRCS =
+HEADERS = iostram fstram sstream string cstdlib climits ctime cassert
+SRCS = $(MAINSRCS) $(OTHSRCS)
+OBJS = $(SRCS:.cpp=.o)
+TARGETS = main
+MEMCHECKARGS = 
+
+CFLAGS = -g -Wall -O2
+
+%.o: %.cpp
+	$(CC) $(CFLAGS) -o $@ -c $< 
+
+all: $(TARGETS)
+
+$(TARGETS): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGETS) $(OBJS)
+
+memcheck: $(TARGETS)
+	valgrind --leak-check=full ./$(TARGETS) $(MEMCHECKARGS)
+
+clean:
+	rm -f $(OBJS) $(TARGETS)
+
+.PHONY: all memcheck clean

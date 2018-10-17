@@ -100,9 +100,10 @@ int main(){
     cin >> method;
     cin >> len;
     cin >> i;
-    int vec[len];
+    int *vec = new int[len];
     for (int temp = 0; temp < len; temp ++) cin >> vec[temp];
     if (method) ismall = Dselect(vec, len, i);
     else ismall = Rselect(vec, len, i);
     cout << "The order-" << i << " item is " << ismall << endl;
+    delete [] vec; 
 }
