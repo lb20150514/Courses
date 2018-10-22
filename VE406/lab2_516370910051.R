@@ -1,14 +1,10 @@
 # Task 1 part(a) --------------------------------------------
 deb.df = read.table("debonding.txt", header = T)
 str(deb.df)
-# read.table may be very slow in practice, because it will
-#   evaluate data while reading it. We may use other function
-#   in R to read large quantity of data.
 
 
 # Task 1 part(b) --------------------------------------------
-deb.full.LM = lm(debonding ~ time + voltage + ph + temp, 
-                 data = deb.df)
+deb.full.LM = lm(debonding ~., data = deb.df)
 summary(deb.full.LM)
 # debonding = -96.51 + 0.063 time + 0.0016 voltage - 0.27 ph 
 #             + 0.33 temp
@@ -42,12 +38,11 @@ qqline(deb.full.LM$residuals)
 qqnorm(rstandard(deb.full.LM), xlab = "N(0,1)", 
        ylab = "Standard Residual")
 qqline(rstandard(deb.full.LM))
-# Difference between (g) & (h)
-#   
+
 
 # Task 1 part(i) --------------------------------------------
-# library(MASS)
-# debonding.dc = boxcox(deb.full.LM)
+library(MASS)
+boxcox(deb.full.LM)
 # By boxcox() in MASS we find an appropriate lambda = 0.5
 lambda = 0.5
 debonding.bc = (deb.df[,"debonding"] ^ lambda- 1) / lambda
@@ -60,19 +55,26 @@ debonding.full.bc.LM = lm(debonding.bc ~ time + voltage + ph + temp,
 summary(debonding.full.bc.LM)
 # debonding.bc = -3.899e+01 + 2.775e-02 time + 6.419e-04 voltage  
 #                 -1.305e-01 ph + 1.347e-01 temp
-# No, there is no evidence that this model is better.
+# The F-statistic is testing overall significance. It is testing the
+#   assumption. In this case we cannot tell which model is better 
+#   from F-test.
 
 
 
 # Task 1 part(k) --------------------------------------------
+# The p-value of F-statistic in these two models are both 
+#   smaller than 0.05. Therefore, we can reject the null 
+#   hypothesis that debonding is not related to any of the 
+#   variables.
 
 
 # Task 1 part(l) --------------------------------------------
+# The p-value (alpha) of ph shows it is less significant than
+#   the other three regressors, so its slope may be zero.
+
 
 # Task 1 part(m) --------------------------------------------
-deb.co = summary(deb.full.LM)
-b1.ci = deb.co$coefficients[2,1] + c(-1, 1) * 
-  deb.co$coefficients[2,2] * qt(0.975, deb.full.LM$df.residual)
+b1.ci = confint(deb.full.LM, "time", level = 0.95)
 b1.ci
 
 
@@ -94,8 +96,6 @@ summary(deb.no.v.p.LM)
 # Judging from adjusted R-square, deb.no.v.LM is better. We
 #   cannot use this value to compare debonding.full.bc.LM with
 #   the others, because its response is different.
-# If we have model 5: Y~1+., we can use R-square to compare it
-#   with model 1.
 
 
 # Task 2 part(a) --------------------------------------------
@@ -109,16 +109,30 @@ summary(sim.LM)
 
 
 # Task 2 part(b) --------------------------------------------
-
+# sim.x4.B.df = sim.df
+# sim.x4.B.df$x4 = relevel(sim.x4.B.df$x4, ref = "B")
+# sim.x4.B.LM = lm(y ~ . + x1 * x3 + x1 * x4 + x2 * x3 + 
+#               x2 * x4 + x3 * x4, data = sim.x4.B.df)
+# No. From this operation we will find there is no significant
+#   difference whether we take B or C for x4.
 
 
 # Task 2 part(c) --------------------------------------------
+anova(sim.LM)
+# A common practice to select variables.
 # P-value is the indicator of correctness of original hypothesis.
 # Having a large p-value output means the assumption of
-#   relation betweenthe specific item and y may be wrong.
+#   relation between the specific item and y may be wrong.
+# The test value of x3:x4 is too large, it means we can drop 
+#   this item.
 
 
 # Task 2 part(d) --------------------------------------------
 source ("lab2_func.R")
-f.vec = replicate(1e4, sim.p.func(n= 200))
+f.vec = replicate(1e4, sim.p.func(n = 200))
 sim.plot()
+# This function gives an example that even if in 1e4 times of 
+#   sampling whter most of the p-values are very small, it 
+#   cannot unsure the correctness of model.
+# Therefore, a F-test without examing residuals first will be 
+#   nonsense.
