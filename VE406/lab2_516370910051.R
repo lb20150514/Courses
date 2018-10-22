@@ -1,6 +1,9 @@
 # Task 1 part(a) --------------------------------------------
 deb.df = read.table("debonding.txt", header = T)
-deb.df
+str(deb.df)
+# read.table may be very slow in practice, because it will
+#   evaluate data while reading it. We may use other function
+#   in R to read large quantity of data.
 
 
 # Task 1 part(b) --------------------------------------------
@@ -39,7 +42,8 @@ qqline(deb.full.LM$residuals)
 qqnorm(rstandard(deb.full.LM), xlab = "N(0,1)", 
        ylab = "Standard Residual")
 qqline(rstandard(deb.full.LM))
-
+# Difference between (g) & (h)
+#   
 
 # Task 1 part(i) --------------------------------------------
 # library(MASS)
@@ -87,7 +91,11 @@ deb.no.v.LM = lm(debonding ~ time + ph + temp, data = deb.df)
 deb.no.v.p.LM = lm(debonding ~ time + temp, data = deb.df)
 summary(deb.no.v.LM)
 summary(deb.no.v.p.LM)
-#
+# Judging from adjusted R-square, deb.no.v.LM is better. We
+#   cannot use this value to compare debonding.full.bc.LM with
+#   the others, because its response is different.
+# If we have model 5: Y~1+., we can use R-square to compare it
+#   with model 1.
 
 
 # Task 2 part(a) --------------------------------------------
