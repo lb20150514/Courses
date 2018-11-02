@@ -88,38 +88,42 @@ chem_pro.LM = lm(yield~conversion+flow+ratio, data = chem_pro.df)
 + Standardised residual Vs fitted value 
 
 ```{r}
-plot(fitted.values(chem_pro.LM), rstandard(chem_pro.LM), xlab = "Fitted value", ylab = "Standard residual")
+plot(fitted.values(chem_pro.LM), rstandard(chem_pro.LM), xlab = "Fitted value", ylab = "Standardised residual")
 abline(a = 0, b = 0, lty = 2, col = "blue")
 ```
 
 + Standardised residual Vs conversion
 
 ```{r}
-plot(chem_pro.df$conversion, rstandard(chem_pro.LM), xlab = "Conversion", ylab = "Standard residual")
+plot(chem_pro.df$conversion, rstandard(chem_pro.LM), xlab = "Conversion", ylab = "Standardised residual")
+abline(a = 0, b = 0, lty = 2, col = "blue")
 ```
 
 + Standardised residual Vs flow
 
 ```{r}
-
+plot(chem_pro.df$flow, rstandard(chem_pro.LM), xlab = "Flow", ylab = "Standardised residual")
+abline(a = 0, b = 0, lty = 2, col = "blue")
 ```
 
 + Standardised residual Vs ratio
 
 ```{r}
-
+plot(chem_pro.df$ratio, rstandard(chem_pro.LM), xlab = "Ratio", ylab = "Standardised residual")
+abline(a = 0, b = 0, lty = 2, col = "blue")
 ```
 
 + Residual Vs Previous Residual
 
 ```{r}
-plot(chen_pro.LM$residuals[-length(chen_pro.LM$residuals)], chen_pro.LM$residuals[-1], xlab = "Previous", ylab = "Residual")
+plot(chem_pro.LM$residuals[-length(chem_pro.LM$residuals)], chem_pro.LM$residuals[-1], xlab = "Previous", ylab = "Residual")
+abline(a = 0, b = 0, lty = 2, col = "blue")
 ```
 
 + Residual Autcorrelation (ACF)
 
 ```{r}
-
+acf(chem_pro.LM$residuals)
 ```
 
 + Q-Q Normal
@@ -132,15 +136,23 @@ qqline(chem_pro.LM$residuals)
 
 ## (e) (1 point)
 
-Compute VIF for `chem_pro.LM` according to the definition, then compare it with the values found in class. 
+```{r}
+
+```
 
 ## (f) (1 point)
 
-Produce a boxplot of Leverage Scores for `chem_pro.LM` like the one I showed in class. 
+```{r}
+pii.vec = hatvalues(chem_pro.LM)
+boxplot(pii.vec, xlab = "chem_pro.LM", ylab = "Leverage Scores")
+```
 
 ## (g) (1 point)
 
-Produce the plot of standardised residual Vs leverage score for `chem_pro.LM` like the one I showed in class. 
+```{r}
+plot(pii.vec, rstandard(chem_pro.LM), col = "white", xlab = "Leverage Score", ylab = "Standardised Residuals")
+text(x = pii.vec, y = rstandard(chem_pro.LM), c(1:44))
+```
 
 ## (h) (1 point)
 
@@ -149,56 +161,46 @@ Produce a table of influence measures for `chem_pro.LM` like the one I showed in
 
 # Task 2 (6 points)
 
-The data `USA_real_estate` is about the median price of houses sold in different areas of USA in 2006. 
-
-Variable | Description 
----------|---------
-`mppsf` | Median Price Per Square Foot
-`ns`    | Number Homes from which the Median Price is computed
-`pnh`   | Percentage of Homes sold that are build in 2005 or 2006
-`pms`   | Percentage of Mortgage Foreclosure Sales
-
-Each data point is for one such area of USA in 2006. 
-
 ## (a) (1 point) 
-
-Check for the presence of heteroskedasticity in the model `usare.LM`. 
 
 ```{r first model, results = 'hide'}
 usare.df = read.table("USA_real_estate.txt", sep = "", header = TRUE)
 usare.LM = lm(mppsf~pnh+pms, data = usare.df)
 ```
 
+```{r}
+plot(fitted.values(usare.LM), rstandard(usare.LM), xlab = "Fitted value", ylab = "Standardised Residuals")
+```
+It is obvious in this plot that with the increase of 'fitted.value' in 'usare.LM', the standardised residual increases. Therefore, there does exist heteroskedasticity.
+
 ## (b) (1 point)
 
-Estiamte the weights for using weighted least squares for the following linear model
-  \[
-    \text{mppsf}_i = \beta_0 + \beta_1 \text{pnh}_i + \beta_2 \text{pms}_i  + \sigma_i \varepsilon
-  \]
-
+```{r}
+w.vec = 
+```
 
 
 ## (c) (1 point)
 
-Construct the linear model using weighted least squares with your estimated weights, name it `usare.WLS`. 
-
-  \[
-    \text{mppsf}_i = \beta_0 + \beta_1 \text{pnh}_i + \beta_2 \text{pms}_i  + \sigma_i \varepsilon
-  \]
+```{r}
+usare.WLS = lm(mppsf ~ pnh + pms, weights = w.vec, data = usare.df)
+summary(usare.WLS)
+```
 
 
 ## (d) (1 point)
 
-Explain why `ns` might also be an appropriate estimate for the weights. 
+```{r}
+w.ns.vec = 
+```
 
 
 ## (e) (1 point)
 
-Construct the linear model using weighted least squares with the weights based on `ns`, name it `usare.ns.WLS`.   
-  \[
-    \text{mppsf}_i = \beta_0 + \beta_1 \text{pnh}_i + \beta_2 \text{pms}_i  + \sigma_i \varepsilon
-  \]
-
+```{r}
+usare.ns.WLS = lm(mppsf ~ pnh + pms, weights = w.ns.vec, data = usare.df)
+summary(usare.ns.WLS)
+```
 
 
 ## (f) (1 point)
