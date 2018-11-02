@@ -1,0 +1,256 @@
+---
+title: 
+  "Lab 3"
+author: 
+  "Ve406"
+date: 
+  'Due: __5 November 2018, 11:40am__'
+header-inclues:
+  - \usepackage{amsmath}
+  - \usepackage{amssymb}
+  - \usepackage{amsthm}  
+  - \usepackage{amsthm}  
+  - \usepackage{listings}
+output: 
+  pdf_document:
+  fig_width: 6
+  fig_height: 6
+---
+
+-----
+
+# Task 1 (8 points)
+
+## (a) (1 point)
+
+Succesfully render this file. 
+
+## (b) (1 point)
+
+```{r}
+chem_pro.df = read.table("chem_pro.csv", sep = ",", header = TRUE)
+```
+
++ Clean 'ratio'
+
+```{r}
+ratio_typo = which(chem_pro.df$ratio == "0>163")
+chem_pro.df$ratio = as.character(chem_pro.df$ratio)
+chem_pro.df$ratio[ratio_typo] = "0.163"
+chem_pro.df$ratio = as.double(chem_pro.df$ratio)
+```
+
++ Clean 'conversion'
+
+```{r}
+conversion_typo = which(chem_pro.df$conversion <= -10)
+chem_pro.df$conversion[conversion_typo] = - chem_pro.df$conversion[conversion_typo]
+```
+
+
+## (c) (1 point)
+
+Refer to '? pairs' we get 'panel.hist' and 'panel.cor'.
+```{r}
+panel.hist <- function(x, ...)
+{
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(usr[1:2], 0, 1.5) )
+    h <- hist(x, plot = FALSE)
+    breaks <- h$breaks; nB <- length(breaks)
+    y <- h$counts; y <- y/max(y)
+    rect(breaks[-nB], 0, breaks[-1], y, col = "cyan", ...)
+}
+panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
+{
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(0, 1, 0, 1))
+    r <- abs(cor(x, y))
+    txt <- format(c(r, 0.123456789), digits = digits)[1]
+    txt <- paste0(prefix, txt)
+    if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+    text(0.5, 0.5, txt, cex = cex.cor * r)
+}
+```
+
+Then
+
+```{r}
+pairs(chem_pro.df, upper.panel = panel.smooth, diag.panel = panel.hist, lower.panel = panel.cor)
+```
+
+## (d) (1 point)
+
+```{r chem_pro.lm, results = 'hide'}
+chem_pro.LM = lm(yield~conversion+flow+ratio, data = chem_pro.df)
+```
+
++ Standardised residual Vs fitted value 
+
+```{r}
+plot(fitted.values(chem_pro.LM), rstandard(chem_pro.LM), xlab = "Fitted value", ylab = "Standard residual")
+abline(a = 0, b = 0, lty = 2, col = "blue")
+```
+
++ Standardised residual Vs conversion
+
+```{r}
+plot(chem_pro.df$conversion, rstandard(chem_pro.LM), xlab = "Conversion", ylab = "Standard residual")
+```
+
++ Standardised residual Vs flow
+
+```{r}
+
+```
+
++ Standardised residual Vs ratio
+
+```{r}
+
+```
+
++ Residual Vs Previous Residual
+
+```{r}
+plot(chen_pro.LM$residuals[-length(chen_pro.LM$residuals)], chen_pro.LM$residuals[-1], xlab = "Previous", ylab = "Residual")
+```
+
++ Residual Autcorrelation (ACF)
+
+```{r}
+
+```
+
++ Q-Q Normal
+
+```{r}
+qqnorm(chem_pro.LM$residuals)
+qqline(chem_pro.LM$residuals)
+```
+
+
+## (e) (1 point)
+
+Compute VIF for `chem_pro.LM` according to the definition, then compare it with the values found in class. 
+
+## (f) (1 point)
+
+Produce a boxplot of Leverage Scores for `chem_pro.LM` like the one I showed in class. 
+
+## (g) (1 point)
+
+Produce the plot of standardised residual Vs leverage score for `chem_pro.LM` like the one I showed in class. 
+
+## (h) (1 point)
+
+Produce a table of influence measures for `chem_pro.LM` like the one I showed in class. 
+
+
+# Task 2 (6 points)
+
+The data `USA_real_estate` is about the median price of houses sold in different areas of USA in 2006. 
+
+Variable | Description 
+---------|---------
+`mppsf` | Median Price Per Square Foot
+`ns`    | Number Homes from which the Median Price is computed
+`pnh`   | Percentage of Homes sold that are build in 2005 or 2006
+`pms`   | Percentage of Mortgage Foreclosure Sales
+
+Each data point is for one such area of USA in 2006. 
+
+## (a) (1 point) 
+
+Check for the presence of heteroskedasticity in the model `usare.LM`. 
+
+```{r first model, results = 'hide'}
+usare.df = read.table("USA_real_estate.txt", sep = "", header = TRUE)
+usare.LM = lm(mppsf~pnh+pms, data = usare.df)
+```
+
+## (b) (1 point)
+
+Estiamte the weights for using weighted least squares for the following linear model
+  \[
+    \text{mppsf}_i = \beta_0 + \beta_1 \text{pnh}_i + \beta_2 \text{pms}_i  + \sigma_i \varepsilon
+  \]
+
+
+
+## (c) (1 point)
+
+Construct the linear model using weighted least squares with your estimated weights, name it `usare.WLS`. 
+
+  \[
+    \text{mppsf}_i = \beta_0 + \beta_1 \text{pnh}_i + \beta_2 \text{pms}_i  + \sigma_i \varepsilon
+  \]
+
+
+## (d) (1 point)
+
+Explain why `ns` might also be an appropriate estimate for the weights. 
+
+
+## (e) (1 point)
+
+Construct the linear model using weighted least squares with the weights based on `ns`, name it `usare.ns.WLS`.   
+  \[
+    \text{mppsf}_i = \beta_0 + \beta_1 \text{pnh}_i + \beta_2 \text{pms}_i  + \sigma_i \varepsilon
+  \]
+
+
+
+## (f) (1 point)
+
+Compare `usare.WLS` with `usare.ns.WLS`. Which of the two models do you prefer? Explain your answer. 
+
+# Task 3
+
+## (a) (1 point)
+
+```{r}
+gbo.df = read.table("grossboxoffice.txt", header = T)
+gbo.LM = lm(GrossBoxOffice ~ year, data = gbo.df)
+summary(gbo.LM)
+```
+
+First we look at F-statistic. Since p-value is less than 0.05, we can reject null hypothesis and accept this model.
+Then we check R-squared. It indicates that this model can explain the 92.97% of variability in yield.
+Finally, we check the p-value of T-test for 'year' and '(Intercept)'. They are both much less than 0.05, so we can use these two coefficients.
+
+## (b) (1 point)
+
+First we try to detect the presence of 'AR(1)'.
+
+```{r}
+lag = 1
+index1 = 0:(lag - 1) - nrow(gbo.df)
+year.lag.1 = gbo.df$year[index1]
+GrossBoxOffice.1 = gbo.df$GrossBoxOffice[-(1:lag)]
+year.1 = gbo.df$year[-(1:lag)]
+gbo.lag1.LM = lm(GrossBoxOffice.1 ~ year.1 + year.lag.1)
+summary(gbo.lag1.LM)
+```
+
+We should notice that in summary of 'gbo.lag1.LM', the estimate of 'year.lag.1' is 'NA'. What's more, there is a line saying *1 not defined because of singularities*, which means that the effect of 'year.lag.1' on 'GrossBoxOffice' is exactly the same as that of 'year' and thus this item can be omitted. Therefore, the possibility of using 'AR(1)' is small.
+Since the data size is small, 'AR(2)' and 'AR(3)' should be unnecessary when we don't have a significant 'AR(1)'.
+
+## (c) (1 point)
+
+Obtain a final model for predicting `GrossBoxOffice` for `year=1975`, name it as `gbo.final.M`.
+
+## (d) (1 point)
+
+Produce diagnostic plots to justify your choice of model. 
+
+## (e) (1 point)
+
+Describe any weakness in your `gbo.final.M`. 
+
+## (f) (1 point)
+
+Use your model `gbo.final.M` to identify any outliers. 
+
+
+
