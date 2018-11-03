@@ -52,21 +52,35 @@ private:
   COMP compare;
 
 private:
-  // Add any additional member functions or data you require here.
-  // You may want to define a strcut/class to represent nodes in the heap and a
-  // pointer to the min node in the heap.
+	struct Node() {
+		TYPE val;
+		unsigned degree;
+		std::list<Node*> child;
 
+		Node(TYPE val): val(val), degree(0) {}
+	}
+	unsigned num = 0;
+	Node* min = NULL;
+	std::list<Node*> root;
 };
 
 template<typename TYPE, typename COMP>
 fib_heap<TYPE, COMP> ::fib_heap(COMP comp) {
 	compare = comp;
-	// Fill in the remaining lines if you need.
 }
 
 template<typename TYPE, typename COMP>
 void fib_heap<TYPE, COMP> ::enqueue(const TYPE &val) {
-	// Fill in the body.
+	Node* ele = new Node(val);
+	if (!min) {
+		this->root.push_back(ele);
+		this->min = ele;
+	}
+	else {
+		// insert!
+		if (val < this->min->val) this->min = ele;
+	}
+	this->num++;
 }
 
 template<typename TYPE, typename COMP>
@@ -76,7 +90,7 @@ TYPE fib_heap<TYPE, COMP> ::dequeue_min() {
 
 template<typename TYPE, typename COMP>
 const TYPE &fib_heap<TYPE, COMP> ::get_min() const {
-	// Fill in the body.
+	return this->min->val;
 }
 
 template<typename TYPE, typename COMP>
@@ -86,7 +100,7 @@ bool fib_heap<TYPE, COMP> ::empty() const {
 
 template<typename TYPE, typename COMP>
 unsigned fib_heap<TYPE, COMP> ::size() const {
-	// Fill in the body.
+	return this->num;
 }
 
 #endif //FIB_HEAP_H
