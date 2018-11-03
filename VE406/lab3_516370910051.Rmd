@@ -137,14 +137,26 @@ qqline(chem_pro.LM$residuals)
 ## (e) (1 point)
 
 ```{r}
-
+VIF <- rep(0,4)
+names(VIF) <- c("yield", "conversion", "flow", "ratio")
+VIF[1] <- 1 / (1 - summary(chem_pro.LM)$r.squared)
+chem_pro.conversion.LM = lm(conversion ~., data = chem_pro.df)
+VIF[2] <- 1 / (1 - summary(chem_pro.conversion.LM)$r.squared)
+chem_pro.flow.LM = lm(flow ~., data = chem_pro.df)
+VIF[3] <- 1 / (1 - summary(chem_pro.flow.LM)$r.squared)
+chem_pro.ratio.LM = lm(ratio ~., data = chem_pro.df)
+VIF[4] <- 1 / (1 - summary(chem_pro.ratio.LM)$r.squared)
+VIF
 ```
 
 ## (f) (1 point)
 
 ```{r}
 pii.vec = hatvalues(chem_pro.LM)
-boxplot(pii.vec, xlab = "chem_pro.LM", ylab = "Leverage Scores")
+boxplot(pii.vec, xlab = "chem_pro.LM", ylab = "Leverage Scores", ylim = c(0.05, 0.3))
+excessive <- 3 * (3 + 1) / 44
+abline(a = mean(pii.vec), b = 0, lty = 2, col = "blue")
+abline(a = excessive, b = 0, lty = 2, col = "red")
 ```
 
 ## (g) (1 point)
@@ -156,8 +168,12 @@ text(x = pii.vec, y = rstandard(chem_pro.LM), c(1:44))
 
 ## (h) (1 point)
 
-Produce a table of influence measures for `chem_pro.LM` like the one I showed in class. 
+```{r}
+im = influence.measures(chem_pro.LM)
+im
+```
 
+It is suggested that we should delete influential points 6, 7, 16, 35.
 
 # Task 2 (6 points)
 
@@ -176,7 +192,10 @@ It is obvious in this plot that with the increase of 'fitted.value' in 'usare.LM
 ## (b) (1 point)
 
 ```{r}
-w.vec = 
+factors.group = factor(usare.df$pnh + usare.df$pms)
+convar = tapply(usare.df$mppsf, factors.group, var)
+v.vec = convar[factors.group]
+w.vec = 1 / v.vec
 ```
 
 
@@ -190,14 +209,15 @@ summary(usare.WLS)
 
 ## (d) (1 point)
 
-```{r}
-w.ns.vec = 
-```
+
 
 
 ## (e) (1 point)
 
 ```{r}
+ns.group = factor(usare.df$ns)
+convar.ns = tapply(usare.df$mppsf, ns.group, var)
+w.ns.vec = 1 / convar.ns[ns.group]
 usare.ns.WLS = lm(mppsf ~ pnh + pms, weights = w.ns.vec, data = usare.df)
 summary(usare.ns.WLS)
 ```
@@ -253,6 +273,3 @@ Describe any weakness in your `gbo.final.M`.
 ## (f) (1 point)
 
 Use your model `gbo.final.M` to identify any outliers. 
-
-
-
