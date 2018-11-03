@@ -54,22 +54,29 @@ private:
 template<typename TYPE, typename COMP>
 unsorted_heap<TYPE, COMP> :: unsorted_heap(COMP comp) {
     compare = comp;
-    // Fill in the remaining lines if you need.
 }
 
 template<typename TYPE, typename COMP>
 void unsorted_heap<TYPE, COMP> :: enqueue(const TYPE &val) {
-    // Fill in the body.
+	data.push_back(val);
 }
 
 template<typename TYPE, typename COMP>
 TYPE unsorted_heap<TYPE, COMP> :: dequeue_min() {
-    // Fill in the body.
+	auto p = std::min_element(data.begin(), data.end(), compare);
+	std::swap(*it, data.back());
+	auto min = std::move(data.back());
+	data.pop_back();
+	return min;
 }
 
 template<typename TYPE, typename COMP>
 const TYPE &unsorted_heap<TYPE, COMP> :: get_min() const {
-    // Fill in the body.
+	auto result = data[0];
+	for (TYPE temp : data) {
+		if (compare(temp, result)) result = temp;
+	}
+	return result;
 }
 
 template<typename TYPE, typename COMP>
@@ -79,7 +86,7 @@ bool unsorted_heap<TYPE, COMP> :: empty() const {
 
 template<typename TYPE, typename COMP>
 unsigned unsorted_heap<TYPE, COMP> :: size() const { 
-    // Fill in the body.
+	return data.size();
 }
 
 #endif //UNSORTED_HEAP_H
