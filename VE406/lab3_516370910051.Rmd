@@ -31,7 +31,7 @@ Succesfully render this file.
 chem_pro.df = read.table("chem_pro.csv", sep = ",", header = TRUE)
 ```
 
-+ Clean 'ratio'
+### Clean `ratio`
 
 ```{r}
 ratio_typo = which(chem_pro.df$ratio == "0>163")
@@ -40,7 +40,7 @@ chem_pro.df$ratio[ratio_typo] = "0.163"
 chem_pro.df$ratio = as.double(chem_pro.df$ratio)
 ```
 
-+ Clean 'conversion'
+### Clean `conversion`
 
 ```{r}
 conversion_typo = which(chem_pro.df$conversion <= -10)
@@ -50,7 +50,7 @@ chem_pro.df$conversion[conversion_typo] = - chem_pro.df$conversion[conversion_ty
 
 ## (c) (1 point)
 
-Refer to '? pairs' we get 'panel.hist' and 'panel.cor'.
+Refer to `? pairs` we get `panel.hist()` and `panel.cor()`.
 ```{r}
 panel.hist <- function(x, ...)
 {
@@ -76,7 +76,8 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
 Then
 
 ```{r}
-pairs(chem_pro.df, upper.panel = panel.smooth, diag.panel = panel.hist, lower.panel = panel.cor)
+pairs(chem_pro.df, upper.panel = panel.smooth, diag.panel = panel.hist, 
+      lower.panel = panel.cor)
 ```
 
 ## (d) (1 point)
@@ -87,36 +88,41 @@ chem_pro.LM = lm(yield~conversion+flow+ratio, data = chem_pro.df)
 
 + Standardised residual Vs fitted value 
 
-```{r fig.align="center", out.width="50%", out.height='50%'}
-plot(fitted.values(chem_pro.LM), rstandard(chem_pro.LM), xlab = "Fitted value", ylab = "Standardised residual")
+```{r fig.align="center", out.width="80%", out.height='80%'}
+plot(fitted.values(chem_pro.LM), rstandard(chem_pro.LM), xlab = "Fitted value",
+     ylab = "Standardised residual")
 abline(a = 0, b = 0, lty = 2, col = "blue")
 ```
 
 + Standardised residual Vs conversion
 
-```{r fig.align="center", out.width="50%", out.height='50%'}
-plot(chem_pro.df$conversion, rstandard(chem_pro.LM), xlab = "Conversion", ylab = "Standardised residual")
+```{r fig.align="center", out.width="80%", out.height='80%'}
+plot(chem_pro.df$conversion, rstandard(chem_pro.LM), xlab = "Conversion",
+     ylab = "Standardised residual")
 abline(a = 0, b = 0, lty = 2, col = "blue")
 ```
 
 + Standardised residual Vs flow
 
-```{r fig.align="center", out.width="50%", out.height='50%'}
-plot(chem_pro.df$flow, rstandard(chem_pro.LM), xlab = "Flow", ylab = "Standardised residual")
+```{r fig.align="center", out.width="80%", out.height='80%'}
+plot(chem_pro.df$flow, rstandard(chem_pro.LM), xlab = "Flow", 
+     ylab = "Standardised residual")
 abline(a = 0, b = 0, lty = 2, col = "blue")
 ```
 
 + Standardised residual Vs ratio
 
-```{r fig.align="center", out.width="50%", out.height='50%'}
-plot(chem_pro.df$ratio, rstandard(chem_pro.LM), xlab = "Ratio", ylab = "Standardised residual")
+```{r fig.align="center", out.width="80%", out.height='80%'}
+plot(chem_pro.df$ratio, rstandard(chem_pro.LM), xlab = "Ratio",  
+     ylab = "Standardised residual")
 abline(a = 0, b = 0, lty = 2, col = "blue")
 ```
 
 + Residual Vs Previous Residual
 
-```{r fig.align="center", out.width="50%", out.height='50%'}
-plot(chem_pro.LM$residuals[-length(chem_pro.LM$residuals)], chem_pro.LM$residuals[-1], xlab = "Previous", ylab = "Residual")
+```{r fig.align="center", out.width="80%", out.height='80%'}
+plot(chem_pro.LM$residuals[-length(chem_pro.LM$residuals)], chem_pro.LM$residuals[-1],
+     xlab = "Previous", ylab = "Residual")
 abline(a = 0, b = 0, lty = 2, col = "blue")
 ```
 
@@ -128,7 +134,7 @@ acf(chem_pro.LM$residuals)
 
 + Q-Q Normal
 
-```{r fig.align="center", out.width="50%", out.height='50%'}
+```{r fig.align="center", out.width="80%", out.height='80%'}
 qqnorm(chem_pro.LM$residuals)
 qqline(chem_pro.LM$residuals)
 ```
@@ -150,7 +156,7 @@ VIF
 
 ## (f) (1 point)
 
-```{r fig.align="center", out.width="50%", out.height='50%'}
+```{r fig.align="center", out.width="80%", out.height='80%'}
 pii.vec = hatvalues(chem_pro.LM)
 boxplot(pii.vec, xlab = "chem_pro.LM", ylab = "Leverage Scores", ylim = c(0.05, 0.3))
 excessive <- 3 * (3 + 1) / 44
@@ -160,8 +166,9 @@ abline(a = excessive, b = 0, lty = 2, col = "red")
 
 ## (g) (1 point)
 
-```{r fig.align="center", out.width="50%", out.height='50%'}
-plot(pii.vec, rstandard(chem_pro.LM), col = "white", xlab = "Leverage Score", ylab = "Standardised Residuals")
+```{r fig.align="center", out.width="80%", out.height='80%'}
+plot(pii.vec, rstandard(chem_pro.LM), col = "white", xlab = "Leverage Score",
+     ylab = "Standardised Residuals")
 text(x = pii.vec, y = rstandard(chem_pro.LM), c(1:44))
 ```
 
@@ -183,14 +190,15 @@ usare.df = read.table("USA_real_estate.txt", sep = "", header = TRUE)
 usare.LM = lm(mppsf~pnh+pms, data = usare.df)
 ```
 
-```{r fig.align="center", out.width="50%", out.height='50%'}
-plot(fitted.values(usare.LM), rstandard(usare.LM), xlab = "Fitted value", ylab = "Standardised Residuals")
+```{r fig.align="center", out.width="80%", out.height='80%'}
+plot(fitted.values(usare.LM), rstandard(usare.LM), xlab = "Fitted value", 
+     ylab = "Standardised Residuals")
 abline(a = 0, b = 0, lty = 2, col = "red")
 qqnorm(usare.LM$residuals)
 qqline(usare.LM$residuals)
 ```
 
-From the first plot we can see that with the increase of 'fitted.value' in 'usare.LM', the standardised residual increases. And the Q-Q plot proved that the residual does not follow a normal distribution. Therefore, there does exist heteroskedasticity.
+From the first plot we can see that with the increase of `fitted.value` in `usare.LM`, the standardised residual increases. And the Q-Q plot proved that the residual does not follow a normal distribution. Therefore, there does exist heteroskedasticity.
 
 ## (b) (1 point)
 
@@ -211,7 +219,7 @@ summary(usare.WLS)
 
 ## (d) (1 point)
 
-There is no regulation on choosing weight. The only principle is that our choice should be related to the variables in the model. According to the meaning of 'ns', *Number Homes from which the Median Price is computed*, it is one of the original data source to build 'mppsf'. Therefore, we can use it as weight.
+There is no regulation on choosing weight. The only principle is that our choice should be related to the variables in the model. According to the meaning of `ns`, *Number Homes from which the Median Price is computed*, it is one of the original data source to build 'mppsf'. Therefore, we can use it as weight.
 
 
 ## (e) (1 point)
@@ -224,7 +232,7 @@ summary(usare.ns.WLS)
 
 ## (f) (1 point)
 
-```{r}
+```{r fig.align="center", out.width="80%", out.height='80%', results="hide"}
 split.screen(c(2,2))
 screen(1)
 plot(fitted.values(usare.WLS), rstandard(usare.WLS), ylab = "std residuals")
@@ -240,62 +248,79 @@ qqnorm(usare.ns.WLS$residuals)
 qqline(usare.ns.WLS$residuals, col = "blue")
 ```
 
-According to the plot result, there is no obvious change in Q-Q improvement. For "standardised residuals v.s. fitted value", we can see that 'usare.WLS' makes some improvement. Therefore, I would prefer the 'usare.WLS' model.
+According to the plot result, there is no obvious change in Q-Q improvement. For "standardised residuals v.s. fitted value", we can see that `usare.WLS` makes some improvement. Therefore, I would prefer the `usare.WLS` model.
 
 # Task 3
 
 ## (a) (1 point)
 
-```{r}
+```{r fig.align="center", out.width="80%", out.height='80%'}
 gbo.df = read.table("grossboxoffice.txt", header = T)
 gbo.LM = lm(GrossBoxOffice ~ year, data = gbo.df)
 summary(gbo.LM)
-```
-
-First we look at F-statistic. Since p-value is less than 0.05, we can reject null hypothesis and accept this model.
-Then we check R-squared. It indicates that this model can explain the 92.97% of variability in yield.
-Finally, we check the p-value of T-test for 'year' and '(Intercept)'. They are both much less than 0.05, so we can use these two coefficients.
-
-## (b) (1 point)
-
-First we plot 'acf' to get a general idea about lag.
-
-```{r fig.align="center", out.width="50%", out.height='50%'}
 acf(gbo.LM$residuals)
 ```
 
-It seems that we need to analyze 'AR(1)', 'AR(2)', 'AR(3)' in detailed.
+According to the acf plot, it is obvious that there exists a correlation between the residuals and its lagged version. Therefore, `gbo.LM` is invalid.
 
-+ 'AR(1)'
+## (b) (1 point)
 
-```{r}
-gbo.lag1.df = data.frame(GrossBoxOffice = gbo.df$GrossBoxOffice[-32], year = gbo.df$year[-32], year.lag.1 = gbo.df$year[-1])
-gbo.AR1 = lm(GrossBoxOffice ~ year + year.lag.1, data = gbo.lag1.df)
-summary(gbo.AR1)
-```
-
-We should notice that in summary of 'gbo.AR1', the estimate of 'year.lag.1' is 'NA'. It means that the effect of 'year.lag.1' on 'GrossBoxOffice' is exactly the same as that of 'year'. Therefore, we can continue our exploration on 'AR(2)' and 'AR(3)'.
-
-+ 'AR(2)'
+Since the increasement of year, year.lag.1, year.lag.2, year.lag.3 would be the same, the coefficient of lag terms is too small that even be denoted as `NA` in lag models. A fast estimation is then directly based on `gbo.LM`.
 
 ```{r}
-gbo.lag2.df = data.frame(GrossBoxOffice = gbo.lag1.df$GrossBoxOffice[-31], year = gbo.lag1.df$year[-31], year.lag.1 = gbo.lag1.df$year.lag.1[-31], year.lag.2 = gbo.lag1.df$year.lag.1[-1])
-gbo.AR2 = lm(GrossBoxOffice ~ year + year.lag.1 + year.lag.2, data = gbo.lag2.df)
+res = residuals(gbo.LM)
+cor(res[-1], res[-32])
+res.lag1.df = data.frame(x = res[-32], y = res[-1])
+auxiliary1.LM = lm(y ~ x, data = res.lag1.df)
+summary(auxiliary1.LM)
+```
+It indicates that the residual is positively correlated to previous residual, and F-test of this model shows no obvious evidence against this hypothesis. Therefore, the possibility that we have `AR(1)` is hight.
+
+```{r}
+cor(res[-(1:2)], res[-(32:31)])
+res.lag2.df = data.frame(x = res[-(32:31)], y = res[-(1:2)])
+auxiliary2.LM = lm(y ~ x, data = res.lag2.df)
+summary(auxiliary2.LM)
 ```
 
+In the same way, we find the possibility of taking `AR(2)` is high.
+
+```{r}
+cor(res[-(1:3)], res[-(32:30)])
+res.lag3.df = data.frame(x = res[-(32:30)], y = res[-(1:3)])
+auxiliary3.LM = lm(y ~ x, data = res.lag3.df)
+summary(auxiliary3.LM)
+```
+
+Since `R-squared` of model including `AR(3)` is too small, the possiblity of taking `AR(3)` is smaller but still non-negligible.
 
 ## (c) (1 point)
 
-Obtain a final model for predicting `GrossBoxOffice` for `year=1975`, name it as `gbo.final.M`.
+```{r}
+lag.df = data.frame(GrossBoxOffice = gbo.df$GrossBoxOffice[-32], 
+                    year = gbo.df$year[-32],
+                    lag = gbo.df$GrossBoxOffice[-1])
+gbo.final.M = lm(GrossBoxOffice ~ year + poly(lag,2), 
+                 data = lag.df)
+summary(gbo.final.M)
+predict.lm(gbo.final.M, 
+           data.frame(year = 1975, lag = lag.df$GrossBoxOffice[1]))
+```
 
 ## (d) (1 point)
 
-Produce diagnostic plots to justify your choice of model. 
+```{r fig.align="center"}
+par(mfrow = c(2,2))
+plot(gbo.final.M)
+```
+
 
 ## (e) (1 point)
 
-Describe any weakness in your `gbo.final.M`. 
+There are mainly two problems about my model.
+*Reduce degree of freedom*: The original data base is small, taking autoregression item makes usable data even less.
+*Singularity of variables*: The lag term is highly correlated to `year`, which means that these vairables has high possibility to be multicolinear. This will reduce the reliability of model.
 
 ## (f) (1 point)
 
-Use your model `gbo.final.M` to identify any outliers. 
+The outliers in my model are points 24, 25, 29.
