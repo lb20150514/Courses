@@ -1,3 +1,5 @@
+`ifndef ALUCTL
+`define ALUCTL
 `timescale 1ns / 1ps
 
 module ALUctl(ALUOp, funct, ALUctl);
@@ -14,7 +16,7 @@ case (ALUOp)
             (6'b001100): ALUctl = 4'b0000;  // andi
         endcase
     end
-    default: ALUctl = 4'b0010;              // lw, sw, j(don't care)
+    (2'b11): ALUctl = 4'b0010;              // lw, sw, j(don't care)
     (2'b01): ALUctl = 4'b0110;              // beq, bne
     (2'b10):
     begin
@@ -29,3 +31,4 @@ case (ALUOp)
 endcase
 end
 endmodule
+`endif
