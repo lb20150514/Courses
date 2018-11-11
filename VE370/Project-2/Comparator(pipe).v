@@ -1,9 +1,9 @@
 module Comparator(inData1 ,inData2 ,equalFlag);
 
-input [31:0]  inData1;
-input [31:0]  inData2;
-output equalFlag;
+input [31:0]  in1;
+input [31:0]  in2;
+output equal;
 
-assign equalFlag = (inData1 == inData2) ? 1'b1 : 1'b0;
+assign equal = (in1 == in2) ? 1'b1 : 1'b0;
 
 endmodule
